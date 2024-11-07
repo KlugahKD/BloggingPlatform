@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/BloggingPlatform.API.props" />
+</Project>

@@ -1,0 +1,15 @@
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/bin/Debug/net8.0/BloggingPlatform.Data.deps.json
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/bin/Debug/net8.0/BloggingPlatform.Data.runtimeconfig.json
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/bin/Debug/net8.0/BloggingPlatform.Data.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/bin/Debug/net8.0/BloggingPlatform.Data.pdb
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.csproj.AssemblyReference.cache
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.GeneratedMSBuildEditorConfig.editorconfig
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.AssemblyInfoInputs.cache
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.AssemblyInfo.cs
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.csproj.CoreCompileInputs.cache
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.sourcelink.json
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/refint/BloggingPlatform.Data.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.pdb
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/BloggingPlatform.Data.genruntimeconfig.cache
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.Data/obj/Debug/net8.0/ref/BloggingPlatform.Data.dll
