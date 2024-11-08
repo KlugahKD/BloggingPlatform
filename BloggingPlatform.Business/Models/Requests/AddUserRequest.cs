@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BloggingPlatform.Business.Models.Requests;
 
-public abstract record AddUserRequest
+public class AddUserRequest
 {
     public required string FullName { get; set; }
 

@@ -1,8 +1,7 @@
 namespace BloggingPlatform.Business.Models.Requests;
 
-public record AddBlogpostRequest
+public record BlogPostRequest
 (
    string Title,
-   string Content,
-   string UserId
+   string Content
 );
