@@ -1,6 +1,8 @@
+using BloggingPlatform.Business.Services.Interfaces;
+
 namespace BloggingPlatform.Business.Services.Providers;
 
-public class CommentService
+public class CommentService : ICommentService
 {
     
 }

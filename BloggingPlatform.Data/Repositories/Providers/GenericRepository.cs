@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using BloggingPlatform.Data.Entities;
 using BloggingPlatform.Data.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -99,7 +100,7 @@ public class GenericRepository<TEntity>(BloggingPlatformDbContext dbDbContext, I
         }
     }
 
-    public async Task<bool> SoftDeleteAsync(string id, string? userId)
+    public async Task<bool> SoftDeleteAsync(string id)
     {
         try
         {
@@ -109,9 +110,10 @@ public class GenericRepository<TEntity>(BloggingPlatformDbContext dbDbContext, I
 
             if (entity != null)
             {
+                entity.IsActive = false;
                 entity.IsDeleted = true;
                 entity.DeletedDate = DateTime.UtcNow;
-                entity.CreatedBy = userId ?? "System";
+                entity.UpdatedAt = DateTime.Now;
 
                 _dbSet.Update(entity);
 
@@ -175,5 +177,42 @@ public class GenericRepository<TEntity>(BloggingPlatformDbContext dbDbContext, I
             return false;
         }
        
+    }
+
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        try
+        {
+            logger.LogInformation("Checking if entity exists in database.");
+
+            return await _dbSet
+                .AsNoTracking()
+                .AnyAsync(predicate);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occurred while checking if entity exists in database.");
+
+            return false;
+
+        }
+    }
+
+    public Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        try
+        {
+            logger.LogInformation("Finding entity in database.");
+
+            return _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(predicate);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occurred while finding entity in database.");
+
+            return Task.FromResult(default(TEntity));
+        }
     }
 }

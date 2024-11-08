@@ -146,3 +146,7 @@
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/tr/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Mapster.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Mapster.Core.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Microsoft.Bcl.TimeProvider.dll

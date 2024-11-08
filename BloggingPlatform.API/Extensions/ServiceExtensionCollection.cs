@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using BloggingPlatform.Business.Services.Interfaces;
+using BloggingPlatform.Business.Services.Providers;
 using BloggingPlatform.Data.Repositories.Interface;
 using BloggingPlatform.Data.Repositories.Providers;
 
@@ -13,6 +18,46 @@ public static class ServiceExtensionCollection
         }
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IBlogpostService, BlogpostService>();
+        services.AddScoped<ICommentService, CommentService>();
+        
+        
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
+                };
+            });
 
         return services;
     }
