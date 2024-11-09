@@ -17,8 +17,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BloggingPlatform.Business.Services.Providers;
 
-public class UserService(IGenericRepository<User> userRepository,
-    ILogger<UserService> logger, IPasswordHasher passwordHasher,  IConfiguration configuration) : IUserService
+public class UserService(
+    IGenericRepository<User> userRepository,
+    ILogger<UserService> logger,
+    IPasswordHasher passwordHasher,
+    IConfiguration configuration) : IUserService
 {
     public async Task<ServiceResponse<UserResponse>> RegisterUserAsync(AddUserRequest userRequest)
     {
@@ -76,79 +79,81 @@ public class UserService(IGenericRepository<User> userRepository,
             return Response.InternalServerErrorResponse<UserResponse>(Constants.Response.InternalServerError);
         }
     }
-   public async Task<ServiceResponse<string>> LoginAsync(LoginRequest loginRequest)
-{
-    try
+
+    public async Task<ServiceResponse<string>> LoginAsync(LoginRequest loginRequest)
     {
-        logger.LogInformation("Logging in user");
-
-        var isValidPhoneNumber = PhoneNumber.CorrectPhoneNumber(loginRequest.PhoneNumber);
-        if (string.IsNullOrWhiteSpace(isValidPhoneNumber))
+        try
         {
-            logger.LogDebug("Invalid phone number.\r\nUserRequest: {Request}", loginRequest.PhoneNumber);
+            logger.LogInformation("Logging in user");
 
-            return Response.BadRequestResponse<string>("Invalid phone number");
-        }
-
-        var user = await userRepository.FindAsync(u =>
-            u.PhoneNumber == loginRequest.PhoneNumber && u.IsActive);
-
-        if (user is null)
-        {
-            logger.LogDebug("User with PhoneNumber does not exist.\r\nUserRequest: {Request}",
-                loginRequest.PhoneNumber);
-
-            return Response.BadRequestResponse<string>("Incorrect Login Credentials");
-        }
-
-        var verifyPassword = passwordHasher.VerifyPassword(user.Password, loginRequest.Password);
-
-        if (!verifyPassword)
-        {
-            logger.LogDebug("User with PhoneNumber password is incorrect.\r\nUserRequest: {Request}",
-                loginRequest.PhoneNumber);
-
-            return Response.BadRequestResponse<string>("Incorrect Login Credentials");
-        }
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
+            var isValidPhoneNumber = PhoneNumber.CorrectPhoneNumber(loginRequest.PhoneNumber);
+            if (string.IsNullOrWhiteSpace(isValidPhoneNumber))
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Issuer = configuration["JwtSettings:Issuer"],
-            Audience = configuration["JwtSettings:Audience"]
-        };
+                logger.LogDebug("Invalid phone number.\r\nUserRequest: {Request}", loginRequest.PhoneNumber);
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        var tokenString = tokenHandler.WriteToken(token);
+                return Response.BadRequestResponse<string>("Invalid phone number");
+            }
 
-        logger.LogInformation("Token Created Successfully");
-        return Response.OkResponse(tokenString);
+            var user = await userRepository.FindAsync(u =>
+                u.PhoneNumber == loginRequest.PhoneNumber && u.IsActive);
+
+            if (user is null)
+            {
+                logger.LogDebug("User with PhoneNumber does not exist.\r\nUserRequest: {Request}",
+                    loginRequest.PhoneNumber);
+
+                return Response.BadRequestResponse<string>("Incorrect Login Credentials");
+            }
+
+            var verifyPassword = passwordHasher.VerifyPassword(user.Password, loginRequest.Password);
+
+            if (!verifyPassword)
+            {
+                logger.LogDebug("User with PhoneNumber password is incorrect.\r\nUserRequest: {Request}",
+                    loginRequest.PhoneNumber);
+
+                return Response.BadRequestResponse<string>("Incorrect Login Credentials");
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Name, user.FullName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials =
+                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = configuration["JwtSettings:Issuer"],
+                Audience = configuration["JwtSettings:Audience"]
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            logger.LogInformation("Token Created Successfully");
+            return Response.OkResponse(tokenString);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error logging in user");
+
+            return Response.InternalServerErrorResponse<string>(Constants.Response.InternalServerError);
+        }
     }
-    catch (Exception e)
-    {
-        logger.LogError(e, "Error logging in user");
-
-        return Response.InternalServerErrorResponse<string>(Constants.Response.InternalServerError);
-    }
-}
 
     public async Task<ServiceResponse<UserResponse>> GetUserByIdAsync(string userId)
     {
         try
         {
             logger.LogInformation("Getting user by ID {UserId}", userId);
-            
+
             var user = await userRepository.FindAsync(x => x.Id == userId);
 
             if (user is null)
@@ -157,16 +162,16 @@ public class UserService(IGenericRepository<User> userRepository,
 
                 return Response.NotFoundResponse<UserResponse>("User does not exist");
             }
-            
+
             logger.LogInformation("User with Id: {Id} found", userId);
-            
+
             return Response.OkResponse(user.Adapt<UserResponse>());
 
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error retrieving user with ID {UserId}", userId);
-            
+
             return Response.InternalServerErrorResponse<UserResponse>(Constants.Response.InternalServerError);
         }
     }
@@ -194,22 +199,23 @@ public class UserService(IGenericRepository<User> userRepository,
             if (!isUpdated)
             {
                 logger.LogError("Error occurred while updating user.\r\nUserRequest: {Request}", userRequest);
-                
+
                 return Response.FailedDependencyResponse<UserResponse>("Error occurred while updating user");
             }
 
             logger.LogInformation("User with ID {UserId} updated successfully.", userId);
-            
+
             return Response.OkResponse(user.Adapt<UserResponse>());
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error updating user with ID {UserId}", userId);
-            
+
             return Response.InternalServerErrorResponse<UserResponse>(Constants.Response.InternalServerError);
         }
-       
+
     }
+
     public async Task<ServiceResponse<UserResponse>> DeleteUserAsync(string userId)
     {
         try
@@ -219,21 +225,21 @@ public class UserService(IGenericRepository<User> userRepository,
             if (user == null)
             {
                 logger.LogDebug("User with ID {UserId} not found.", userId);
-                
+
                 return Response.NotFoundResponse<UserResponse>("User not found");
             }
-            
+
             var isUpdated = await userRepository.SoftDeleteAsync(userId);
 
             if (!isUpdated)
             {
                 logger.LogError("Error occurred while deleting user.\r\nUserId: {UserId}", userId);
-                
+
                 return Response.FailedDependencyResponse<UserResponse>("Error occurred while deleting user");
             }
 
             logger.LogInformation("User with ID {UserId} deleted successfully.", userId);
-            
+
             return Response.OkResponse(user.Adapt<UserResponse>());
         }
         catch (Exception e)
@@ -242,15 +248,14 @@ public class UserService(IGenericRepository<User> userRepository,
             return Response.InternalServerErrorResponse<UserResponse>(Constants.Response.InternalServerError);
         }
     }
-
+    
     public async Task<ServiceResponse<PagedResult<UserResponse>>> GetAllUsersAsync(BaseFilter filter)
     {
         try
         {
             logger.LogInformation("Getting all users with search {Search}", filter.Search);
 
-            var usersList = await userRepository.AsQueryableAsync();
-            var query = usersList.AsQueryable().Where(u => u.IsActive);
+            var query = userRepository.AsQueryable().Where(u => u.IsActive);
 
             if (filter.CreatedAt.HasValue)
             {

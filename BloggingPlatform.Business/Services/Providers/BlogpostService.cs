@@ -173,8 +173,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
     {
         try
         {
-            var blogPostsList = await blogPostRepository.AsQueryableAsync();
-            var query = blogPostsList.AsQueryable();
+            var query =  blogPostRepository.AsQueryable().Where(u => u.IsActive);
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
