@@ -41,7 +41,7 @@ public class UserService(
             {
                 logger.LogDebug("Password is too short.\r\nUserRequest: {Request}", userRequest.PhoneNumber);
 
-                return Response.BadRequestResponse<UserResponse>("Password is too short");
+                return Response.BadRequestResponse<UserResponse>("Password must be at least 6 characters long");
             }
 
             var userAlreadyExists = await userRepository.ExistsAsync(u =>
