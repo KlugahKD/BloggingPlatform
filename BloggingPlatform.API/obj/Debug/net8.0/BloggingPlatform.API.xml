@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BloggingPlatform.API</name>
+    </assembly>
+    <members>
+        <member name="T:BloggingPlatform.API.Controllers.BlogPostsController">
+            <summary>
+            Allows users and admins to create, update, delete and view blog posts
+            </summary>
+            <param name="blogpostService"></param>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.BlogPostsController.#ctor(BloggingPlatform.Business.Services.Interfaces.IBlogpostService)">
+            <summary>
+            Allows users and admins to create, update, delete and view blog posts
+            </summary>
+            <param name="blogpostService"></param>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.BlogPostsController.CreateBlogPost(BloggingPlatform.Business.Models.Requests.BlogPostRequest)">
+            <summary>
+            Creates a new blog post
+            </summary>
+            <param name="request">Blog post request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.BlogPostsController.UpdateBlogPost(System.String,BloggingPlatform.Business.Models.Requests.UpdateBlogpostRequest)">
+            <summary>
+            Updates an existing blog post
+            </summary>
+            <param name="postId">Blog post ID</param>
+            <param name="request">Blog post request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.BlogPostsController.DeleteBlogPost(System.String)">
+            <summary>
+            Deletes a blog post
+            </summary>
+            <param name="postId">Blog post ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.BlogPostsController.GetBlogPostById(System.String)">
+            <summary>
+            Gets a blog post by ID
+            </summary>
+            <param name="postId">Blog post ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.BlogPostsController.GetAllBlogPosts(BloggingPlatform.Business.Models.BaseModels.BaseFilter)">
+            <summary>
+            Gets all blog posts with pagination and filtering
+            </summary>
+            <param name="filter">Filter object</param>
+            <returns></returns>
+        </member>
+        <member name="T:BloggingPlatform.API.Controllers.CommentsController">
+            <summary>
+            Endpoint to manage comments
+            </summary>
+            <param name="commentService"></param>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.CommentsController.#ctor(BloggingPlatform.Business.Services.Interfaces.ICommentService)">
+            <summary>
+            Endpoint to manage comments
+            </summary>
+            <param name="commentService"></param>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.CommentsController.CreateComment(BloggingPlatform.Business.Models.Requests.CommentRequest)">
+            <summary>
+            Creates a new comment
+            </summary>
+            <param name="request">Comment request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.CommentsController.UpdateComment(System.String,BloggingPlatform.Business.Models.Requests.UpdateCommentRequest)">
+            <summary>
+            Updates an existing comment
+            </summary>
+            <param name="commentId">Comment ID</param>
+            <param name="request">Comment request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.CommentsController.DeleteComment(System.String)">
+            <summary>
+            Deletes a comment
+            </summary>
+            <param name="commentId">Comment ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.CommentsController.GetCommentById(System.String)">
+            <summary>
+            Gets a comment by ID
+            </summary>
+            <param name="commentId">Comment ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.CommentsController.GetAllCommentsByBlogPostId(System.String,BloggingPlatform.Business.Models.BaseModels.BaseFilter)">
+            <summary>
+            Gets all comments for a blog post with pagination and filtering
+            </summary>
+            <param name="blogPostId">Blog post ID</param>
+            <param name="filter">Filter object</param>
+            <returns></returns>
+        </member>
+        <member name="T:BloggingPlatform.API.Controllers.UsersController">
+            <summary>
+            User Endpoint for CRUD operations
+            </summary>
+            <param name="userService"></param>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.#ctor(BloggingPlatform.Business.Services.Interfaces.IUserService)">
+            <summary>
+            User Endpoint for CRUD operations
+            </summary>
+            <param name="userService"></param>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.AddUser(BloggingPlatform.Business.Models.Requests.AddUserRequest)">
+            <summary>
+            Adds a new user to the database
+            </summary>
+            <param name="request">Add user request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.UpdateUser(System.String,BloggingPlatform.Business.Models.Requests.UpdateUserRequest)">
+            <summary>
+            Updates a user in the database
+            </summary>
+            <param name="userId">User ID</param>
+            <param name="request">Update user request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.DeleteUser(System.String)">
+            <summary>
+            Deletes a user from the database
+            </summary>
+            <param name="userId">User ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.GetUserById(System.String)">
+            <summary>
+            Gets a single user from the database
+            </summary>
+            <param name="userId">User ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.Login(BloggingPlatform.Business.Models.Requests.LoginRequest)">
+            <summary>
+            Logs in a user
+            </summary>
+            <param name="request">Login request object</param>
+            <returns></returns>
+        </member>
+        <member name="M:BloggingPlatform.API.Controllers.UsersController.GetAllUsers(BloggingPlatform.Business.Models.BaseModels.BaseFilter)">
+            <summary>
+            Gets all users with pagination and filtering
+            </summary>
+            <param name="filter">Filter object</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

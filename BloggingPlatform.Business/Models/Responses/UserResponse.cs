@@ -11,4 +11,6 @@ public class UserResponse
     public string Role { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    
+    public string CreatedBy { get; set; }
 }

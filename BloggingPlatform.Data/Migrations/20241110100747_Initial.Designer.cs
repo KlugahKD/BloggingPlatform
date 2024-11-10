@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloggingPlatform.Data.Migrations
 {
     [DbContext(typeof(BloggingPlatformDbContext))]
-    [Migration("20241109101424_SecondMigration")]
-    partial class SecondMigration
+    [Migration("20241110100747_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,6 +29,10 @@ namespace BloggingPlatform.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -53,6 +57,10 @@ namespace BloggingPlatform.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<string>("Tags")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -66,7 +74,6 @@ namespace BloggingPlatform.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -84,6 +91,10 @@ namespace BloggingPlatform.Data.Migrations
                     b.Property<string>("BlogPostId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Commenter")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -117,7 +128,6 @@ namespace BloggingPlatform.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -191,13 +201,9 @@ namespace BloggingPlatform.Data.Migrations
 
             modelBuilder.Entity("BloggingPlatform.Data.Entities.BlogPost", b =>
                 {
-                    b.HasOne("BloggingPlatform.Data.Entities.User", "Author")
+                    b.HasOne("BloggingPlatform.Data.Entities.User", null)
                         .WithMany("BlogPosts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Author");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("BloggingPlatform.Data.Entities.Comment", b =>
@@ -208,15 +214,11 @@ namespace BloggingPlatform.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BloggingPlatform.Data.Entities.User", "Commenter")
+                    b.HasOne("BloggingPlatform.Data.Entities.User", null)
                         .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("BlogPost");
-
-                    b.Navigation("Commenter");
                 });
 
             modelBuilder.Entity("BloggingPlatform.Data.Entities.BlogPost", b =>

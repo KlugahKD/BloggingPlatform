@@ -23,7 +23,7 @@ public class UserService(
     IPasswordHasher passwordHasher,
     IConfiguration configuration) : IUserService
 {
-    public async Task<ServiceResponse<UserResponse>> RegisterUserAsync(AddUserRequest userRequest)
+    public async Task<ServiceResponse<UserResponse>> RegisterUserAsync(AddUserRequest userRequest,  ClaimsPrincipal userPrincipal)
     {
         try
         {
@@ -36,9 +36,16 @@ public class UserService(
 
                 return Response.BadRequestResponse<UserResponse>("Invalid phone number");
             }
+            
+            if (userRequest.Password.Length < 6)
+            {
+                logger.LogDebug("Password is too short.\r\nUserRequest: {Request}", userRequest.PhoneNumber);
+
+                return Response.BadRequestResponse<UserResponse>("Password is too short");
+            }
 
             var userAlreadyExists = await userRepository.ExistsAsync(u =>
-                u.PhoneNumber == userRequest.PhoneNumber || u.Email == userRequest.Email);
+                u.PhoneNumber == isValidPhoneNumber || u.Email == userRequest.Email);
             if (userAlreadyExists)
             {
                 logger.LogDebug("User with PhoneNumber already exists.\r\nUserRequest: {Request}",
@@ -46,17 +53,21 @@ public class UserService(
 
                 return Response.BadRequestResponse<UserResponse>("User already exists");
             }
+            
+            var createdBy = userPrincipal.Identity?.Name ?? Constants.CreatedBy.System;
+
 
             var user = new User()
             {
                 Id = Guid.NewGuid().ToString("N"),
                 FullName = userRequest.FullName,
                 Email = userRequest.Email,
-                PhoneNumber = userRequest.PhoneNumber,
+                PhoneNumber = isValidPhoneNumber,
                 Password = passwordHasher.HashPassword(userRequest.Password),
                 CreatedAt = DateTime.Now,
                 IsActive = true,
-                Role = Constants.Roles.User
+                Role = Constants.Roles.User,
+                CreatedBy = createdBy
             };
 
             var isSaved = await userRepository.AddAsync(user);
@@ -95,9 +106,9 @@ public class UserService(
             }
 
             var user = await userRepository.FindAsync(u =>
-                u.PhoneNumber == loginRequest.PhoneNumber && u.IsActive);
+                u.PhoneNumber == isValidPhoneNumber && u.IsActive);
 
-            if (user is null)
+            if (user is null || !user.IsActive)
             {
                 logger.LogDebug("User with PhoneNumber does not exist.\r\nUserRequest: {Request}",
                     loginRequest.PhoneNumber);
@@ -156,7 +167,7 @@ public class UserService(
 
             var user = await userRepository.FindAsync(x => x.Id == userId);
 
-            if (user is null)
+            if (user is null || !user.IsActive)
             {
                 logger.LogDebug("User does not exist.\r\nTransactionRequest: {Request}", userId);
 
@@ -182,7 +193,7 @@ public class UserService(
         {
             var user = await userRepository.FindAsync(u => u.Id == userId && u.IsActive);
 
-            if (user == null)
+            if (user == null || !user.IsActive)
             {
                 logger.LogDebug("User with ID {UserId} not found.", userId);
                 return Response.NotFoundResponse<UserResponse>("User not found");
@@ -222,7 +233,7 @@ public class UserService(
         {
             var user = await userRepository.FindAsync(u => u.Id == userId && u.IsActive);
 
-            if (user == null)
+            if (user == null || !user.IsActive)
             {
                 logger.LogDebug("User with ID {UserId} not found.", userId);
 

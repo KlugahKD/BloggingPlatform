@@ -19,9 +19,6 @@ public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
         builder.Property(bp => bp.Content)
             .IsRequired();
 
-        builder.Property(bp => bp.UserId)
-            .IsRequired();
-
         builder.Property(bp => bp.CreatedAt)
             .IsRequired();
 
@@ -39,12 +36,7 @@ public class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
             .HasDefaultValue(false);
         
         builder.Property(bp => bp.DeletedDate);
-
-        builder.HasOne(bp => bp.Author)
-            .WithMany()
-            .HasForeignKey(bp => bp.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        
         builder.HasMany(bp => bp.Comments)
             .WithOne(c => c.BlogPost)
             .HasForeignKey(c => c.BlogPostId)

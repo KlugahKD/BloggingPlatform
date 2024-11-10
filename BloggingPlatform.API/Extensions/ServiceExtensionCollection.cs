@@ -1,5 +1,7 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using BloggingPlatform.Business.Services.Interfaces;
 using BloggingPlatform.Business.Services.Providers;
@@ -22,7 +24,6 @@ public static class ServiceExtensionCollection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IBlogpostService, BlogpostService>();
         services.AddScoped<ICommentService, CommentService>();
-        
         
         services.AddCors(options =>
         {
@@ -58,6 +59,46 @@ public static class ServiceExtensionCollection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
                 };
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddSwaggerWithJwt(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "BloggingPlatform API", Version = "v1" });
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            c.IncludeXmlComments(xmlPath);
+
+            // Add JWT Bearer security definition
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+
+            // Add security requirement
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
+        });
 
         return services;
     }

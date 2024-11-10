@@ -7,7 +7,7 @@ namespace BloggingPlatform.Business.Services.Interfaces;
 
 public interface ICommentService
 {
-    Task<ServiceResponse<CommentResponse>> CreateCommentAsync(CommentRequest request);
+    Task<ServiceResponse<CommentResponse>> CreateCommentAsync(CommentRequest request, string userId);
     Task<ServiceResponse<CommentResponse>> UpdateCommentAsync(string commentId,string userId, UpdateCommentRequest request);
     Task<ServiceResponse<CommentResponse>> DeleteCommentAsync(string commentId, string userId);
     Task<ServiceResponse<CommentResponse>> GetCommentByIdAsync(string commentId);

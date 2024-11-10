@@ -16,12 +16,6 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .IsRequired()
             .HasMaxLength(1000);
 
-        builder.Property(c => c.UserId)
-            .IsRequired();
-
-        builder.Property(c => c.BlogPostId)
-            .IsRequired();
-
         builder.Property(c => c.CreatedAt)
             .IsRequired();
 
@@ -39,12 +33,7 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .HasDefaultValue(false);
 
         builder.Property(c => c.DeletedDate);
-
-        builder.HasOne(c => c.Commenter)
-            .WithMany(u => u.Comments)
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        
         builder.HasOne(c => c.BlogPost)
             .WithMany(bp => bp.Comments)
             .HasForeignKey(c => c.BlogPostId)

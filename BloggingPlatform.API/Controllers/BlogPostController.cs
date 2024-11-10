@@ -1,16 +1,21 @@
 using System.Security.Claims;
 using BloggingPlatform.API.Helper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BloggingPlatform.Business.Models.BaseModels;
 using BloggingPlatform.Business.Models.Requests;
 using BloggingPlatform.Business.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BloggingPlatform.API.Controllers;
 
+/// <summary>
+/// Allows users and admins to create, update, delete and view blog posts
+/// </summary>
+/// <param name="blogpostService"></param>
 [ApiController]
 [Route("api/v1/[controller]")]
 [Authorize]
+
 public class BlogPostsController(IBlogpostService blogpostService) : ControllerBase
 {
     /// <summary>
@@ -18,15 +23,19 @@ public class BlogPostsController(IBlogpostService blogpostService) : ControllerB
     /// </summary>
     /// <param name="request">Blog post request object</param>
     /// <returns></returns>
-    [HttpPost]
-    public async Task<IActionResult> CreateBlogPost([FromBody] BlogPostRequest request)
+[HttpPost]
+public async Task<IActionResult> CreateBlogPost([FromBody] BlogPostRequest request)
+{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (string.IsNullOrEmpty(userId))
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var response = await blogpostService.CreateBlogPostAsync(userId!, request);
-        
-        return ActionResultHelper.ToActionResult(response);
+        return Unauthorized("User ID not found in token.");
     }
 
+    var response = await blogpostService.CreateBlogPostAsync(userId, request);
+
+    return ActionResultHelper.ToActionResult(response);
+}
     /// <summary>
     /// Updates an existing blog post
     /// </summary>

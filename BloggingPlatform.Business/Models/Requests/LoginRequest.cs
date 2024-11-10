@@ -1,3 +1,7 @@
 namespace BloggingPlatform.Business.Models.Requests;
 
-public abstract record LoginRequest(string PhoneNumber, string Password);
+public class LoginRequest
+{ 
+    public string PhoneNumber { get; set; }
+    public string Password { get; set; }
+};

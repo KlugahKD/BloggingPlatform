@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BloggingPlatform.Business.Common;
 using BloggingPlatform.Business.Models.BaseModels;
 using BloggingPlatform.Business.Models.Requests;
@@ -8,7 +9,7 @@ namespace BloggingPlatform.Business.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<ServiceResponse<UserResponse>> RegisterUserAsync(AddUserRequest userRequest);
+    Task<ServiceResponse<UserResponse>> RegisterUserAsync(AddUserRequest userRequest,  ClaimsPrincipal userPrincipal);
     Task<ServiceResponse<string>> LoginAsync (LoginRequest loginRequest);
     Task<ServiceResponse<UserResponse>> GetUserByIdAsync(string userId);
     Task<ServiceResponse<UserResponse>> UpdateUserAsync(string userId, UpdateUserRequest userRequest);

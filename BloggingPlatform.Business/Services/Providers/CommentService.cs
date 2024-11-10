@@ -17,22 +17,22 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
     IGenericRepository<User> userRepository,
     ILogger<CommentService> logger) : ICommentService
 {
-    public async Task<ServiceResponse<CommentResponse>> CreateCommentAsync(CommentRequest request)
+    public async Task<ServiceResponse<CommentResponse>> CreateCommentAsync(CommentRequest request, string userId)
     {
         try
         {
             logger.LogInformation("Creating comment");
             
-            var user = await userRepository.FindAsync(u => u.Id == request.UserId);
+            var user = await userRepository.FindAsync(u => u.Id == userId);
             if (user is null)
             {
-                logger.LogDebug("User with ID {UserId} not found.", request.UserId);
+                logger.LogDebug("User with ID {UserId} not found.", userId);
                 
                 return Response.NotFoundResponse<CommentResponse>("User not found");
             }
             
             var blogPost = await blogPostRepository.FindAsync(b => b.Id == request.PostId);
-            if (blogPost is null)
+            if (blogPost is null || !blogPost.IsActive)
             {
                 logger.LogDebug("Blog post with ID {PostId} not found.", request.PostId);
                 
@@ -44,11 +44,10 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
                 Id = Guid.NewGuid().ToString("N"),
                 Content = request.Content,
                 CreatedAt = DateTime.UtcNow,
-                UserId = request.UserId,
-                BlogPostId = request.PostId,
                 IsActive = true,
-                Commenter = user,
-                BlogPost = blogPost
+                Commenter = user.FullName,
+                CreatedBy = user.FullName,
+                BlogPostId = request.PostId
             };
                 
             var isSaved = await commentRepository.AddAsync(comment);
@@ -76,8 +75,8 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
         {
             logger.LogInformation("User with Id {UserId} is updating comment with ID {CommentId}", userId, commentId);
             
-            var userExists = await userRepository.ExistsAsync(u => u.Id == userId);
-            if (!userExists)
+            var user = await userRepository.FindAsync(u => u.Id == userId);
+            if (user is null)
             {
                 logger.LogDebug("User with ID {UserId} not found.", userId);
                 
@@ -86,14 +85,14 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
             
             var comment = await commentRepository.FindAsync(c => c.Id == commentId);
             
-            if (comment == null)
+            if (comment is null || !comment.IsActive)
             {
                 logger.LogDebug("Comment with ID {CommentId} not found.", commentId);
                 
                 return Response.NotFoundResponse<CommentResponse>("Comment not found");
             }
             
-            var userMadeTheComment = comment.UserId == userId;
+            var userMadeTheComment = comment.Commenter == user.FullName;
 
             if (!userMadeTheComment)
             {
@@ -103,6 +102,7 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
             }
 
             comment.Content = request.Content ?? comment.Content;
+            comment.UpdatedAt = DateTime.UtcNow;
 
             var isUpdated = await commentRepository.UpdateAsync(comment);
 
@@ -131,7 +131,7 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
         
             var comment = await commentRepository.FindAsync(c => c.Id == commentId);
 
-            if (comment is null)
+            if (comment is null || !comment.IsActive)
             {
                 logger.LogDebug("Comment with ID {CommentId} not found.", commentId);
                 
@@ -146,7 +146,7 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
                 return Response.NotFoundResponse<CommentResponse>("User not found");
             }
 
-            var userMadeTheComment = comment.UserId == userId;
+            var userMadeTheComment = comment.Commenter == user.FullName;
             var userIsAdmin = user.Role == "Admin";
 
             if (!userMadeTheComment && !userIsAdmin)
@@ -183,7 +183,7 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
             
             var comment = await commentRepository.FindAsync(c => c.Id == commentId);
 
-            if (comment is null)
+            if (comment is null || !comment.IsActive)
             {
                 logger.LogDebug("Comment with ID {CommentId} not found.", commentId);
                 
@@ -214,7 +214,7 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
                 return Response.NotFoundResponse<PagedResult<CommentResponse>>("Blog post not found");
             }
 
-            var query = commentRepository.AsQueryable().Where(c => c.BlogPostId == blogPostId);
+            var query = commentRepository.AsQueryable().Where(c => c.IsActive && c.BlogPostId == blogPostId);
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
@@ -232,9 +232,7 @@ public class CommentService(IGenericRepository<Comment> commentRepository,
                     Id = c.Id,
                     Content = c.Content,
                     CreatedAt = c.CreatedAt,
-                    UserId = c.UserId,
-                    Commenter = c.Commenter,
-                    BlogPostId = c.BlogPostId
+                    Commenter = c.Commenter
                 })
                 .ToListAsync();
 

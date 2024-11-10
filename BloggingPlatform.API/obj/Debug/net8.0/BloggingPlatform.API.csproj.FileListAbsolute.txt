@@ -5,6 +5,7 @@
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/BloggingPlatform.API.runtimeconfig.json
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/BloggingPlatform.API.dll
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/BloggingPlatform.API.pdb
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/BloggingPlatform.API.xml
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Azure.Core.dll
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Azure.Identity.dll
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/bin/Debug/net8.0/Humanizer.dll
@@ -147,6 +148,7 @@
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/Blogging.6FCCB841.Up2Date
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/BloggingPlatform.API.dll
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/refint/BloggingPlatform.API.dll
+/Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/BloggingPlatform.API.xml
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/BloggingPlatform.API.pdb
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/BloggingPlatform.API.genruntimeconfig.cache
 /Users/apple/Desktop/Projects/Personal/BloggingPlatform/BloggingPlatform.API/obj/Debug/net8.0/ref/BloggingPlatform.API.dll

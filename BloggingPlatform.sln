@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform.Data", "Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform.API", "BloggingPlatform.API\BloggingPlatform.API.csproj", "{3AD69B1B-0805-4A30-9BC2-31E75F3A0FAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatForm.UnitTest", "BloggingPlatForm.UnitTest\BloggingPlatForm.UnitTest.csproj", "{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{3AD69B1B-0805-4A30-9BC2-31E75F3A0FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AD69B1B-0805-4A30-9BC2-31E75F3A0FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AD69B1B-0805-4A30-9BC2-31E75F3A0FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

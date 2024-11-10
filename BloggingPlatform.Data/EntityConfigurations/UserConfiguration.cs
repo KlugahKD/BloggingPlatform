@@ -44,15 +44,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasDefaultValue(false);
 
         builder.Property(u => u.DeletedDate);
-
-        builder.HasMany(u => u.BlogPosts)
-            .WithOne(bp => bp.Author)
-            .HasForeignKey(bp => bp.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany(u => u.Comments)
-            .WithOne(c => c.Commenter)
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

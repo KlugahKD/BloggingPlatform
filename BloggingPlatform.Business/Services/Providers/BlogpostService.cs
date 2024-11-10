@@ -20,7 +20,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
         {
             logger.LogInformation("User {UserId} creating blog post", userId);
             
-            var validRequest = string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.Content);
+            var validRequest = !string.IsNullOrWhiteSpace(request.Title) || !string.IsNullOrWhiteSpace(request.Content);
             
             if (!validRequest)
             {
@@ -31,7 +31,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
             
             var user = await userRepository.FindAsync(u => u.Id == userId);
             
-            if (user is null)
+            if (user is null )
             {
                 logger.LogDebug("User with ID {UserId} not found.", userId);
                 
@@ -43,12 +43,12 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
                 Id = Guid.NewGuid().ToString("N"),
                 Title = request.Title,
                 Content = request.Content,
-                Author = user,
-                UserId = userId,
+                Author = user.FullName,
                 CreatedAt = DateTime.Now,
                 IsActive = true,
+                Tags = request.Tags, 
+                CreatedBy = user.FullName
             };
-
             var isSaved = await blogPostRepository.AddAsync(blogPost);
 
             if (!isSaved)
@@ -74,7 +74,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
         {
             logger.LogInformation("Updating blog post with ID {PostId}", postId);
             
-            var validRequest = string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.Content);
+            var validRequest = !string.IsNullOrWhiteSpace(request.Title) || !string.IsNullOrWhiteSpace(request.Content);
             
             if (!validRequest)
             {
@@ -85,7 +85,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
             
             var blogPost = await blogPostRepository.FindAsync(bp => bp.Id == postId);
 
-            if (blogPost is null)
+            if (blogPost is null || !blogPost.IsActive)
             {
                 logger.LogDebug("Blog post with ID {PostId} not found.", postId);
                 
@@ -120,7 +120,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
         {
             var blogPost = await blogPostRepository.FindAsync(bp => bp.Id == postId);
 
-            if (blogPost is null)
+            if (blogPost is null || !blogPost.IsActive)
             {
                 logger.LogDebug("Blog post with ID {PostId} not found.", postId);
                 
@@ -150,9 +150,11 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
     {
         try
         {
-            var blogPost = await blogPostRepository.FindAsync(bp => bp.Id == postId);
+            var blogPost = await blogPostRepository.AsQueryable()
+                .Include(bp => bp.Comments.Where(c => c.IsActive))
+                .FirstOrDefaultAsync(bp => bp.Id == postId);
 
-            if (blogPost is null)
+            if (blogPost is null || !blogPost.IsActive)
             {
                 logger.LogDebug("Blog post with ID {PostId} not found.", postId);
                 
@@ -173,37 +175,49 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
     {
         try
         {
-            var query =  blogPostRepository.AsQueryable().Where(u => u.IsActive);
-
-            if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                query = query.Where(bp => bp.Title.Contains(filter.Search) || bp.Content.Contains(filter.Search));
-            }
-
+            var query = blogPostRepository.AsQueryable()
+                .Where(u => u.IsActive)
+                .Include(bp => bp.Comments.Where(c => c.IsActive));
+            
             var totalCount = await query.CountAsync();
 
             var blogPosts = await query
                 .OrderByDescending(bp => bp.CreatedAt)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
-                .Select(bp => new BlogPostResponse
-                {
-                    Id = bp.Id,
-                    Title = bp.Title,
-                    Content = bp.Content,
-                    CreatedAt = bp.CreatedAt,
-                    Author = bp.Author,
-                    UserId = bp.UserId,
-                    Comments = bp.Comments,
-                })
                 .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                blogPosts = blogPosts.Where(bp => bp.Title.Contains(filter.Search, StringComparison.OrdinalIgnoreCase) ||
+                                                  bp.Content.Contains(filter.Search, StringComparison.OrdinalIgnoreCase) ||
+                                                  bp.Tags.Exists(tag => tag.Contains(filter.Search, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+
+            var blogPostResponses = blogPosts.Select(bp => new BlogPostResponse
+            {
+                Id = bp.Id,
+                Title = bp.Title,
+                Content = bp.Content,
+                CreatedAt = bp.CreatedAt,
+                Author = bp.Author,
+                Comments = bp.Comments.Select(c => new CommentResponse
+                {
+                    Id = c.Id,
+                    Content = c.Content,
+                    Commenter = c.Commenter,
+                    CreatedAt = c.CreatedAt
+                }).ToList(),
+                Tags = bp.Tags
+            }).ToList();
 
             var response = new PagedResult<BlogPostResponse>
             {
                 Page = filter.PageNumber,
                 PageSize = filter.PageSize,
                 TotalCount = totalCount,
-                Payload = blogPosts,
+                Payload = blogPostResponses,
             };
 
             return Response.OkResponse(response);
@@ -211,7 +225,7 @@ public class BlogpostService(IGenericRepository<BlogPost> blogPostRepository, IL
         catch (Exception e)
         {
             logger.LogError(e, "Failed to get all blog posts. {Ex}", e.Message);
-            
+
             return Response.InternalServerErrorResponse<PagedResult<BlogPostResponse>>(Constants.Response.InternalServerError);
         }
     }

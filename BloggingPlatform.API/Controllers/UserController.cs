@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BloggingPlatform.API.Controllers;
 
+/// <summary>
+/// User Endpoint for CRUD operations
+/// </summary>
+/// <param name="userService"></param>
 [ApiController]
 [Route("api/v1/[controller]")]
 public class UsersController(IUserService userService) : ControllerBase
@@ -20,7 +24,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddUser([FromBody] AddUserRequest request)
     {
-        var response = await userService.RegisterUserAsync(request);
+        var response = await userService.RegisterUserAsync(request, User);
         
         return ActionResultHelper.ToActionResult(response);
     }
@@ -31,6 +35,7 @@ public class UsersController(IUserService userService) : ControllerBase
     /// <param name="userId">User ID</param>
     /// <param name="request">Update user request object</param>
     /// <returns></returns>
+    [Authorize(Roles = Constants.Roles.Admin)]
     [HttpPut("{userId}")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequest request)
     {
@@ -44,6 +49,7 @@ public class UsersController(IUserService userService) : ControllerBase
     /// </summary>
     /// <param name="userId">User ID</param>
     /// <returns></returns>
+    [Authorize(Roles = Constants.Roles.Admin)]
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(string userId)
     {
@@ -57,7 +63,6 @@ public class UsersController(IUserService userService) : ControllerBase
     /// </summary>
     /// <param name="userId">User ID</param>
     /// <returns></returns>
-    [Authorize(Roles = Constants.Roles.User)]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUserById(string userId)
     {

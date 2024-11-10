@@ -1,6 +1,7 @@
 namespace BloggingPlatform.Business.Models.Requests;
 
-public record UpdateBlogpostRequest(
-    string? Title,
-    string? Content
-    );
+public class UpdateBlogpostRequest
+{
+    public string? Title { get; set; }
+    public string? Content { get; set; }
+};
