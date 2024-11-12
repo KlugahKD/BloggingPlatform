@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform.API", "Blo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatForm.UnitTest", "BloggingPlatForm.UnitTest\BloggingPlatForm.UnitTest.csproj", "{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform.IntegrationTests", "BloggingPlatform.IntegrationTests\BloggingPlatform.IntegrationTests.csproj", "{C98B6DE6-DF35-4EA4-AA54-20E8F8A08B47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{238121FD-A4AC-4B2C-BF9F-0151FEFE7703}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C98B6DE6-DF35-4EA4-AA54-20E8F8A08B47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C98B6DE6-DF35-4EA4-AA54-20E8F8A08B47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C98B6DE6-DF35-4EA4-AA54-20E8F8A08B47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C98B6DE6-DF35-4EA4-AA54-20E8F8A08B47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
