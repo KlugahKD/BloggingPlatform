@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BloggingPlatform.IntegrationTests
 {
-    public class BloggingPlatformApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+    public abstract class BloggingPlatformApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
